@@ -1,15 +1,13 @@
 import "./App.css";
 import Table from "./components/Table";
 import Header from "./components/Header";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import StaticTable from "./components/StaticTable";
 const rows = [
   {
     id: 1,
     name: "Sumit",
     email: "mastersumit@gmail.com",
-    gender: "male",
-    dob: 24,
-    country: "india",
     city: "kanpur",
     
   },
@@ -17,9 +15,6 @@ const rows = [
     id: 2,
     name: "Mohit",
     email: "mastermohit@gmail.com",
-    gender: "male",
-    dob: 24,
-    country: "india",
     city: "kanpur",
     
   },
@@ -27,33 +22,30 @@ const rows = [
     id: 3,
     name: "Sourabh",
     email: "mastersourabh@gmail.com",
-    gender: "male",
-    dob: 24,
-    country: "pakistan",
     city: "kanpur",
-    
   },
 ];
 
 function App() {
+
+  useEffect(() => {
+    getLocalData()
+   
+  }, [])
+
   let addNewRow = {
     id: "id",
-    name: "Name",
-    email: "Email",
-    gender: "Gender",
-    dob: 24,
-    country: "Country",
-    city: "City",
-    key: "key",
+    name: "",
+    email: "",
+    gender: "",
+    dob: "",
+    country: "",
+    city: "",
+    
   };
 
-  // Id (input)
-  // • Name (input)
-  // • Email, (input)
-  // • Gender, (dropdown)
-  // • DOB, (datepicker)
-  // • Country (dropdown)
-  // • City, (dropdown)
+
+
   const columns = [
     {
       headerName: "Id",
@@ -61,18 +53,22 @@ function App() {
       sortable: true,
       editable: true,
       checkboxSelection: true,
+      cellStyle:cellStyles
+      
     },
-    { headerName: "Name", field: "name", sortable: true, editable: true },
-    { headerName: "Email", field: "email", sortable: true, editable: true },
+    { headerName: "Name", field: "name", sortable: true, editable: true ,cellStyle:cellStyles
+  
+  },
+    { headerName: "Email", field: "email", sortable: true, editable: true, cellStyle:cellStylesYellow},
     {
       headerName: "Gender",
       field: "gender",
       editable: true,
       cellRendererFramework: (para) => (
         <div>
-          <select name="gender">
-            <option value="">Male</option>
-            <option value="">Female</option>
+          <select  name="gender">
+            <option >Male</option>
+            <option >Female</option>
           </select>
         </div>
       ),
@@ -96,9 +92,9 @@ function App() {
     cellRendererFramework: (para) => (
       <div>
         <select name="gender">
-          <option value="">India</option>
-          <option value="">Russia</option>
-          <option value=""> Japan</option>
+          <option >India</option>
+          <option >Russia</option>
+          <option > Japan</option>
         </select>
       </div>
     ),},
@@ -111,7 +107,7 @@ function App() {
       field: "city",
       sortable: true,
       editable: true,
-
+      cellStyle:cellStyles
       
     },
 
@@ -138,15 +134,83 @@ function App() {
     },
   ];
 
+  const nonEditableColumns = [
+    {
+      headerName: "Id",
+      field: "id",
+      sortable: true,
+      editable: true,
+    },
+    { headerName: "Name", field: "name", sortable: true, },
+    { headerName: "Email", field: "email", sortable: true, },
+    {
+      headerName: "Gender",
+      field: "gender",
+    },
+
+    {
+      headerName: "DOB",
+      field: "dob",
+    },
+
+
+
+    { headerName: "Country", field: "country", sortable: true,},
+
+
+
+
+    {
+      headerName: "City",
+      field: "city",
+      sortable: true,
+    },
+
+    
+  ];
+
+  
   let [data, setData] = useState({
     rows: rows,
   });
 
-  let [gridApi, setgridApi] = useState(null);
+  let [gridApi, setgridApi] = useState([]);
 
   let [selectedRows, setSelectedRows] = useState([]);
 
+
+  let[staticData,setStaticData]=useState({columns:[],rows:[]})
   // console.log(gridApi)
+let[submit,setSubmit]=useState(false)
+  const [nonEditableRows,setNonEditableRows]=useState([])
+  
+  
+  
+
+  function cellStyles(params){
+    
+    if(params.value===""&&submit===true){
+      return {background:"red"}
+    }
+  }
+
+  
+  function cellStylesYellow(params){
+    if(params.value==="" &&submit===true){
+      return {background:"yellow"}
+    }
+  }
+
+
+  const getLocalData=()=>{
+    if(localStorage.getItem('data')===null){
+      localStorage.setItem('data',JSON.stringify([]))
+    }else{
+     let localData=JSON.parse(localStorage.getItem('data'))
+     setStaticData(localData)
+    }
+    }
+    
 
   return (
     <div className="App">
@@ -158,6 +222,12 @@ function App() {
         gridApi={gridApi}
         selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}
+        nonEditableColumns={nonEditableColumns}
+        setStaticData={setStaticData}
+        staticData={staticData}
+        nonEditableRows={nonEditableRows}
+        setNonEditableRows={setNonEditableRows}
+        setSubmit={setSubmit}
       />
 
       <Table
@@ -169,7 +239,10 @@ function App() {
 
      <h1>Submitted Grid</h1>
 
-     
+     <StaticTable
+      rows={staticData.rows}
+      columns={staticData.columns}
+     />
 
     </div>
   );

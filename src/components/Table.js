@@ -13,7 +13,7 @@ const Table = (props) => {
   function gridReady(params) {
     props.setgridApi(params.api);
   }
-
+ 
   return (
     <div className="ag-theme-alpine" style={{ height: 400, width: "100%" }}>
       <AgGridReact
@@ -22,6 +22,8 @@ const Table = (props) => {
         rowSelection={rowSelectionType}
         onSelectionChanged={onSelectionChange}
         onGridReady={gridReady}
+        
+        
       />
     </div>
   );

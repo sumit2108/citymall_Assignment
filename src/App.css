@@ -1,13 +1,15 @@
 .App{
-  padding: 100px;
+  padding: 80px;
 }
 
 .header{
-  padding: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  padding-bottom: 30px;
 }
 
 .header button{
-  margin-left: 50px;
+ 
   height: 40px;
   padding: 10px;
   font-size: large;
@@ -23,4 +25,7 @@
 
 i{
   color: red;
+}
+.my-class{
+  
 }
